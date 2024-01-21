@@ -17,9 +17,8 @@ This has been tested on an M1 Max MacBook Pro running macOS 14.2.1 with [Pro Vid
 ## Installation
 
 1. Download `mvhevcsplit` from the releases
-2. Place either on your PATH or in a working directory
-3. In Terminal, navigate to where you placed the binary and mark it as executable: `chmod +x mvhevcsplit`
-4. See "Usage Example" section
+2. In Terminal, navigate to where you placed the binary and mark it as executable: `chmod +x mvhevcsplit`
+3. Copy into your PATH (for example: `sudo cp mvhevcsplit /usr/local/bin`), or leave it in a working directory
 
 In the future I may also try to figure out how to get this added to Homebrew.
 
@@ -27,18 +26,22 @@ In the future I may also try to figure out how to get this added to Homebrew.
 
 In Terminal: `mvhevcsplit 1920 1080 MOV_0001.MOV`
 
-`output_left.mov` and `output_right.mov`, if they already exist, **will be deleted** and then the new contents will be output to the current directory.
+`output_left.mov` and `output_right.mov`, if they already exist, **will be deleted** and then new files with those names will be written to the current directory.
 
 ## Contributing
 
-I literally do not know Swift (I'm an Android developer) and had to figure it out for this project, so apologies for the code organization (or lack thereof). There is also no error handling or anything. Consider this to at most a "proof of concept." All optimizations, and improvements are welcome.
+I literally do not know Swift (I'm an Android developer) and had to bumble my way through for this project, so apologies for the code organization (or lack thereof). There is also no error handling or anything. Consider this to at most a "proof of concept." PRs welcome!
 
 ## Additional Notes
 
-This would not have been possible without this blog post from [Finn Voorhees](https://github.com/finnvoor): <https://www.finnvoorhees.com/words/reading-and-writing-spatial-video-with-avfoundation> ([archive link](https://web.archive.org/web/20240117091738/https://www.finnvoorhees.com/words/reading-and-writing-spatial-video-with-avfoundation))
+This would not have been possible without [this blog post](https://www.finnvoorhees.com/words/reading-and-writing-spatial-video-with-avfoundation) from [Finn Voorhees](https://github.com/finnvoor). Huge thanks! ([archive link](https://web.archive.org/web/20240117091738/https://www.finnvoorhees.com/words/reading-and-writing-spatial-video-with-avfoundation))
 
 ## Changelog
 
-### v0.1 (2024-01-21)
+### v0.0.2-alpha (2024-01-21)
+
+Have user specify output dimensions.
+
+### v0.0.1-alpha (2024-01-21)
 
 Initial release.
