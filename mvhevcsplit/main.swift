@@ -33,19 +33,27 @@ func main() {
     
     let arguments = CommandLine.arguments
     
-    guard arguments.count > 1 else {
-        print("Usage: \(arguments[0]) <MV-HEVC file>")
+    guard arguments.count == 4 else {
+        print("Usage: \(arguments[0]) <output width> <output height> <MV-HEVC file>")
         return
     }
     
     VTRegisterProfessionalVideoWorkflowVideoDecoders()
     
-    let path = arguments[1]
+    guard let width = Int(arguments[1]) else {
+        print("parameter 1 is not a valid integer")
+        return
+    }
+    guard let height = Int(arguments[2]) else {
+        print("parameter 2 is not a valid integer")
+        return
+    }
+    let path = arguments[3]
     printFileSize(filePath: path)
     print("starting first eye")
-    Converter().transcodeMovie(filePath: path, firstEye: true)
+    Converter(height: height, width: width).transcodeMovie(filePath: path, firstEye: true)
     print("starting second eye")
-    Converter().transcodeMovie(filePath: path, firstEye: false)
+    Converter(height: height, width: width).transcodeMovie(filePath: path, firstEye: false)
 }
 
 main()

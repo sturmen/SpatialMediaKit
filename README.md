@@ -4,11 +4,11 @@
 
 ## Purpose
 
-As of January 2024, Apple's MV-HEVC format for stereoscopic video is very new and barely supported by anything. However, there are millions of iPhones (iPhone 15 Pro/Pro Max) that can capture spatial video already. There was no FOSS tool capable of splitting the stereo pair available, especially not in formats suited for post-production.
+As of January 2024, Apple's MV-HEVC format for stereoscopic video is very new and barely supported by anything. However, there are millions of iPhones (iPhone 15 Pro/Pro Max) that can capture spatial video already. There was no available FOSS tool capable of splitting the stereo pair, especially not in formats suited for post-production.
 
 ## Features
 
-There is only one feature: it takes an MV-HEVC file and outputs the left and right eyes as separate files in the current directory. The output format is ProRes 422 HQ, video only. The user is expected to be familiar with tools such as ffmpeg for all other needs.
+There is only one feature: it takes an MV-HEVC file and outputs the left and right eyes as separate files in the current directory. The output format is ProRes 422 HQ, video only. The user is expected to be familiar with tools such as ffmpeg for all other needs, including remuxing the audio back in.
 
 ## Requirements
 
@@ -25,7 +25,7 @@ In the future I may also try to figure out how to get this added to Homebrew.
 
 ## Usage
 
-In Terminal: `mvhevcsplit MOV_0001.MOV`
+In Terminal: `mvhevcsplit 1920 1080 MOV_0001.MOV`
 
 `output_left.mov` and `output_right.mov`, if they already exist, **will be deleted** and then the new contents will be output to the current directory.
 

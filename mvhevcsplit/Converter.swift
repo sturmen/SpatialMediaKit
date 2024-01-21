@@ -10,17 +10,54 @@ import AVFoundation
 import VideoToolbox
 
 class Converter {
+    let outputHeight, outputWidth: Int
     
-    let assetWriterInput = AVAssetWriterInput(
-        mediaType: .video,
-        outputSettings: [
-            AVVideoWidthKey: 1920,
-            AVVideoHeightKey: 1080,
-            AVVideoCodecKey: AVVideoCodecType.proRes422HQ,
-        ]
-    )
+    init(height: Int, width: Int) {
+        self.outputHeight = height
+        self.outputWidth = width
+    }
+    
+    let decoderOutputSettings: [String: Any] = [
+        kCVPixelBufferPixelFormatTypeKey as String : kCVPixelFormatType_422YpCbCr16,
+        AVVideoDecompressionPropertiesKey: [
+            kVTDecompressionPropertyKey_RequestedMVHEVCVideoLayerIDs: [0, 1] as CFArray,
+        ],
+    ]
+    
+    let semaphore = DispatchSemaphore(value: 0)
     
     var completedFrames = 0
+    
+    func incrementFrameCount() {
+        completedFrames += 1
+    }
+    
+    func getCurrentFrameCount() -> Int {
+        return completedFrames
+    }
+    
+    func initWriter(outputUrl: URL) -> (assetWriter: AVAssetWriter, adaptor: AVAssetWriterInputPixelBufferAdaptor) {
+        let assetWriter = try! AVAssetWriter(
+            outputURL: outputUrl,
+            fileType: .mov
+        )
+        
+        let assetWriterInput = AVAssetWriterInput(
+            mediaType: .video,
+            outputSettings: [
+                AVVideoWidthKey: outputWidth,
+                AVVideoHeightKey: outputHeight,
+                AVVideoCodecKey: AVVideoCodecType.proRes422HQ,
+            ]
+        )
+        
+        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: assetWriterInput)
+        
+        assetWriter.add(assetWriterInput)
+        assetWriter.startWriting()
+        assetWriter.startSession(atSourceTime: .zero)
+        return (assetWriter, adaptor)
+    }
     
     func transcodeMovie(filePath: String, firstEye: Bool) {
         do {
@@ -41,33 +78,28 @@ class Converter {
             
             let sourceMovieUrl = URL(fileURLWithPath: filePath)
             let sourceMovieAsset = AVAsset(url: sourceMovieUrl)
-            let outputSettings: [String: Any] = [
-                kCVPixelBufferPixelFormatTypeKey as String : kCVPixelFormatType_422YpCbCr16,
-                AVVideoDecompressionPropertiesKey: [
-                    kVTDecompressionPropertyKey_RequestedMVHEVCVideoLayerIDs: [0, 1] as CFArray,
-                ],
-            ]
             
-            let loadingSemaphore = DispatchSemaphore(value: 0)
             var tracks: [AVAssetTrack]?
             sourceMovieAsset.loadTracks(withMediaType: .video, completionHandler: { (foundtracks, error) in
                 tracks = foundtracks
-                loadingSemaphore.signal()
+                self.semaphore.signal()
             })
-            let loadingTimeoutResult = loadingSemaphore.wait(timeout: .now() + 60*60*24)
+            
+            let loadingTimeoutResult = self.semaphore.wait(timeout: .now() + 60*60*24)
             switch loadingTimeoutResult {
             case .success:
                 print("loaded video track")
             case .timedOut:
                 print("loading video track exceeded hardcoded limit of 24 hours")
             }
+            
             guard let tracks = tracks else {
                 print("could not load any tracks!")
                 return
             }
             let assetReaderTrackOutput = AVAssetReaderTrackOutput(
                 track: tracks.first!,
-                outputSettings: outputSettings
+                outputSettings: decoderOutputSettings
             )
             assetReaderTrackOutput.alwaysCopiesSampleData = false
             let assetReader = try AVAssetReader(asset: sourceMovieAsset)
@@ -77,19 +109,12 @@ class Converter {
                 print("could not start reading")
                 return
             }
-            let assetWriter = try! AVAssetWriter(
-                outputURL: outputUrl,
-                fileType: .mov
-            )
-            let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: assetWriterInput)
-            
-            assetWriter.add(assetWriterInput)
-            assetWriter.startWriting()
-            assetWriter.startSession(atSourceTime: .zero)
+
             let serialQueue = DispatchQueue(label: "writer")
             
+            let (assetWriter, adaptor) = initWriter(outputUrl: outputUrl)
+            
             print("about to start writing")
-            let writingSemaphore = DispatchSemaphore(value: 0)
             adaptor.assetWriterInput.requestMediaDataWhenReady(on: serialQueue) { [weak self] in
                 print("output stream ready to be written to")
                 guard let self = self else {
@@ -105,12 +130,12 @@ class Converter {
                             } else {
                                 print("advancing due to null sample, reader status is \(assetReader.status)")
                             }
-                            self.assetWriterInput.markAsFinished()
-                            writingSemaphore.signal()
+                            adaptor.assetWriterInput.markAsFinished()
+                            self.semaphore.signal()
                             continue
                         }
                         presentationTs = nextSampleBuffer.presentationTimeStamp
- 
+                        
                         guard let taggedBuffers = nextSampleBuffer.taggedBuffers else { return }
                         let eyeBuffer =  if (firstEye) {
                             taggedBuffers.first(where: {
@@ -127,15 +152,15 @@ class Converter {
                            case let .pixelBuffer(eyePixelBuffer) = eyeBuffer {
                             adaptor.append(eyePixelBuffer, withPresentationTime: presentationTs)
                             while(!adaptor.assetWriterInput.isReadyForMoreMediaData) {
-                                print("waiting for asset writer to be ready again...")
+                                // waiting...
                             }
-                            completedFrames += 1
-                            print("encoded \(completedFrames) frames for \(outputFilename)")
+                            incrementFrameCount()
+                            print("encoded \(getCurrentFrameCount()) frames for \(outputFilename)")
                         }
                     }
                 }
             }
-            let encodingTimeoutResult = writingSemaphore.wait(timeout: .now() + 60*60*24)
+            let encodingTimeoutResult = semaphore.wait(timeout: .now() + 60*60*24)
             switch encodingTimeoutResult {
             case .success:
                 print("encoding completed for \(outputFilename), flushing to disk... ")
@@ -144,9 +169,9 @@ class Converter {
             }
             
             assetWriter.finishWriting() {
-                writingSemaphore.signal()
+                self.semaphore.signal()
             }
-            let writingTimeoutResult = writingSemaphore.wait(timeout: .now() + 60*60*24)
+            let writingTimeoutResult = self.semaphore.wait(timeout: .now() + 60*60*24)
             switch writingTimeoutResult {
             case .success:
                 print("writing \(outputFilename) to disk completed")
