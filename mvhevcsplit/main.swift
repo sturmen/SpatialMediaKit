@@ -25,21 +25,15 @@ func printFileSize(filePath: String) {
 }
 
 func main() {
-    
-    guard VTIsStereoMVHEVCDecodeSupported() else {
-        print("MV-HEVC decoding not supported on this device! Please try again on Apple Silicon and macOS 14+")
-        return
-    }
-    
+    print("mvhevcsplit v0.0.2-alpha https://github.com/sturmen/mvhevcsplit/")
+
     let arguments = CommandLine.arguments
     
     guard arguments.count == 4 else {
         print("Usage: \(arguments[0]) <output width> <output height> <MV-HEVC file>")
         return
     }
-    
-    VTRegisterProfessionalVideoWorkflowVideoDecoders()
-    
+       
     guard let width = Int(arguments[1]) else {
         print("parameter 1 is not a valid integer")
         return
@@ -50,9 +44,17 @@ func main() {
     }
     let path = arguments[3]
     printFileSize(filePath: path)
-    print("starting first eye")
+    
+    guard VTIsStereoMVHEVCDecodeSupported() else {
+        print("MV-HEVC decoding not supported on this device! Please try again on Apple Silicon and macOS 14+")
+        return
+    }
+    
+    VTRegisterProfessionalVideoWorkflowVideoDecoders()
+    
+    print("initializing first converter...")
     Converter(height: height, width: width).transcodeMovie(filePath: path, firstEye: true)
-    print("starting second eye")
+    print("initializing second converter...")
     Converter(height: height, width: width).transcodeMovie(filePath: path, firstEye: false)
 }
 

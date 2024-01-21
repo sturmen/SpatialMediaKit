@@ -67,7 +67,7 @@ class Converter {
             } else {
                 "right"
             }
-            print("About to start transcoding \(filePath) for " + chosenEyeLabel + " eye.")
+            print("about to start transcoding \(filePath) for " + chosenEyeLabel + " eye.")
             let outputFilename = "output_" + chosenEyeLabel + ".mov"
             
             let outputUrl = URL(fileURLWithPath: FileManager.default.currentDirectoryPath).appendingPathComponent(outputFilename)
