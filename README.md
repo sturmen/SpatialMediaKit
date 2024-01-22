@@ -10,6 +10,13 @@ As of January 2024, Apple's MV-HEVC format for stereoscopic video is very new an
 
 There is only one feature: it takes an MV-HEVC file and outputs the left and right eyes as separate files in the current directory. The output format is ProRes 422 HQ, video only. The user is expected to be familiar with tools such as ffmpeg for all other needs, including remuxing the audio back in.
 
+Compared to similar tools:, `mvhevcsplit` has the following advantages:
+
+- Free as in speech and free as in beer. Other tools are proprietary and often charge fees.
+- "Visually lossless" (Apple's words) preservation of the original video streams. Other tools re-encode using lossy HEVC compression in side-by-side, leading to generational quality loss.
+- Runs on macOS. To my knowledge, all other existing tools require processing on an iOS device or relying a cloud service, which is a major source of friction in an otherwise streamlined professional workflow.
+- Completely, verifiably private. You are free to examine the source code and see that your media never leaves your devices, enabling you to maintain control over your videos.
+
 ## Requirements
 
 This has been tested on an M1 Max MacBook Pro running macOS 14.2.1 with [Pro Video Formats 2.3](https://support.apple.com/kb/DL2100?viewlocale=en_US&locale=en_US). Hopefully other configurations work, but your mileage may vary.
