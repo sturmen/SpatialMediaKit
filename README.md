@@ -1,6 +1,6 @@
-# mvhevcsplit
+# SpatialMediaKit
 
- Split a MV-HEVC file into separate left and right ProRes files.
+A utility for transforming spatial media.
 
 ## Purpose
 
@@ -8,9 +8,9 @@ As of January 2024, Apple's MV-HEVC format for stereoscopic video is very new an
 
 ## Features
 
-There is only one feature: it takes an MV-HEVC file and outputs the left and right eyes as separate files in the current directory. The output format is ProRes 422 HQ, video only. The user is expected to be familiar with tools such as ffmpeg for all other needs, including remuxing the audio back in.
+Today, there is only one feature: `Split`. It takes an MV-HEVC file and outputs the left and right eyes as separate files in the current directory. The output format is ProRes 422 HQ, video only. The user is expected to be familiar with tools such as ffmpeg for all other needs, including remuxing the audio back in.
 
-Compared to similar tools:, `mvhevcsplit` has the following advantages:
+Compared to similar tools:, `SpatialMediaKit` has the following advantages:
 
 - Free as in speech and free as in beer. Other tools are proprietary and often charge fees.
 - "Visually lossless" (Apple's words) preservation of the original video streams. Other tools re-encode using lossy HEVC compression in side-by-side, leading to generational quality loss.
@@ -19,21 +19,33 @@ Compared to similar tools:, `mvhevcsplit` has the following advantages:
 
 ## Requirements
 
-This has been tested on an M1 Max MacBook Pro running macOS 14.2.1 with [Pro Video Formats 2.3](https://support.apple.com/kb/DL2100?viewlocale=en_US&locale=en_US). Hopefully other configurations work, but your mileage may vary.
+This has been tested on an M1 Max MacBook Pro running macOS 14.2.1. Hopefully other configurations work, but your mileage may vary.
 
 ## Installation
 
-1. Download `mvhevcsplit` from the releases
-2. In Terminal, navigate to where you placed the binary and mark it as executable: `chmod +x mvhevcsplit`
-3. Copy into your PATH (for example: `sudo cp mvhevcsplit /usr/local/bin`), or leave it in a working directory
+1. Download `spatial-media-kit-tool` from the [releases page](https://github.com/sturmen/SpatialMediaKit/releases)
+2. In Terminal, navigate to where you placed the binary and mark it as executable: `chmod +x spatial-media-kit-tool`
+3. Copy into your PATH (for example: `sudo cp spatial-media-kit-tool /usr/local/bin`), or leave it in a working directory
 
 In the future I may also try to figure out how to get this added to Homebrew.
 
 ## Usage
 
-In Terminal: `mvhevcsplit 1920 1080 MOV_0001.MOV`
+### `split`
 
-`output_left.mov` and `output_right.mov`, if they already exist, **will be deleted** and then new files with those names will be written to the current directory.
+```text
+OVERVIEW: Split a single MV-HEVC input into left and right video files.
+
+USAGE: spatial-media-kit-tool split --input-file <input-file> [--output-dir <output-dir>]
+
+OPTIONS:
+  -i, --input-file <input-file>
+                          The spatial media file to split.
+  -o, --output-dir <output-dir>
+                          The output directory for the resulting files. If not provided, the current directory will be used.
+  --version               Show the version.
+  -h, --help              Show help information.
+```
 
 ## Contributing
 
@@ -44,6 +56,16 @@ I literally do not know Swift (I'm an Android developer) and had to bumble my wa
 This would not have been possible without [this blog post](https://www.finnvoorhees.com/words/reading-and-writing-spatial-video-with-avfoundation) from [Finn Voorhees](https://github.com/finnvoor). Huge thanks! ([archive link](https://web.archive.org/web/20240117091738/https://www.finnvoorhees.com/words/reading-and-writing-spatial-video-with-avfoundation))
 
 ## Changelog
+
+### v0.0.3-alpha (2024-01-22)
+
+- Renamed project to "SpatialMediaKit"
+- Huge refactor, now based on Swift Package Manager
+- Automatically determines output resolution based on input resolution
+- Reads the source file once and writes both eyes, cutting processing time in half.
+- Allows choosing output directory.
+- Revamped CLI.
+- Added test case
 
 ### v0.0.2-alpha (2024-01-21)
 

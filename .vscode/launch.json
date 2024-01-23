@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:mvhevcsplit}",
+            "name": "Debug spatial-media-kit-tool",
+            "program": "${workspaceFolder:mvhevcsplit}/.build/debug/spatial-media-kit-tool",
+            "preLaunchTask": "swift: Build Debug spatial-media-kit-tool"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "sourceLanguages": [
+                "swift"
+            ],
+            "args": [],
+            "cwd": "${workspaceFolder:mvhevcsplit}",
+            "name": "Release spatial-media-kit-tool",
+            "program": "${workspaceFolder:mvhevcsplit}/.build/release/spatial-media-kit-tool",
+            "preLaunchTask": "swift: Build Release spatial-media-kit-tool"
+        }
+    ]
+}
