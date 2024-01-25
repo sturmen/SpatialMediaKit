@@ -23,7 +23,7 @@ public class SpatialVideoSplitter {
 
   func incrementFrameCountAndLog() {
     completedFrames += 1
-    print("encoded \(completedFrames) frames")
+    print("\rencoded \(completedFrames) frames", terminator: "")
   }
 
   func getCurrentFrameCount() -> Int {
@@ -32,12 +32,12 @@ public class SpatialVideoSplitter {
 
   func createOutputUrl(outputFilename: String, outputDir: String?) throws -> URL {
     let outputDir = outputDir ?? FileManager.default.currentDirectoryPath
-    print("writing output files to \(outputDir)")
     let outputUrl = URL(fileURLWithPath: outputDir)
       .appendingPathComponent(outputFilename)
     if try !checkFileOverwrite(path: outputUrl.path()) {
       throw MediaError.createOutputError
     }
+    print("output file set to \(outputUrl)")
     return outputUrl
   }
 
@@ -117,7 +117,8 @@ public class SpatialVideoSplitter {
       return true
     }
 
-    print("Overwrite existing file? [y/N]: ")
+    print("File already exists: \(path)")
+    print("Overwrite existing file? [y/N]: ", terminator: "")
 
     guard let userInput = readLine() else {
       print("aborting!")
@@ -200,9 +201,9 @@ public class SpatialVideoSplitter {
       while assetReader.status == .reading {
         guard let nextSampleBuffer = assetReaderTrackOutput.copyNextSampleBuffer() else {
           if assetReader.status == .completed {
-            print("finished reading all of \(filePath)")
+            print("\nfinished reading all of \(filePath)")
           } else {
-            print("advancing due to null sample, reader status is \(assetReader.status)")
+            print("\nadvancing due to null sample, reader status is \(assetReader.status)")
           }
           leftAdaptor.assetWriterInput.markAsFinished()
           rightAdaptor.assetWriterInput.markAsFinished()
@@ -216,7 +217,7 @@ public class SpatialVideoSplitter {
       let encodingTimeoutResult = semaphore.wait(timeout: .now() + 60 * 60 * 24)
       switch encodingTimeoutResult {
       case .success:
-        print("encoding completed, flushing to disk... ")
+        print("finished encoding, flushing bytes to disk... ")
       case .timedOut:
         print("encoding file processing time exceeded hardcoded limit of 24 hours")
       }
