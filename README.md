@@ -61,7 +61,7 @@ OPTIONS:
                           The left eye media file to merge.
   -r, --right-file <right-file>
                           The right eye media file to merge.
-  -q, --quality <quality> Output video quality [0-100]. 75 is a good default value.
+  -q, --quality <quality> Output video quality [0-100]. 50 is a good default value.
   --left-is-primary       Set the left file as the "hero" stream that is displayed when viewing in 2D.
   --right-is-primary      Set the right file as the "hero" stream that is displayed when viewing in 2D.
   --horizontal-field-of-view <horizontal-field-of-view>

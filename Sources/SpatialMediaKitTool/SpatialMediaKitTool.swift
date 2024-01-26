@@ -71,7 +71,7 @@ extension SpatialMediaKitTool {
     @Option(name: .shortAndLong, help: "The right eye media file to merge.")
     var rightFile: String
 
-    @Option(name: .shortAndLong, help: "Output video quality [0-100]. 75 is a good default value.")
+    @Option(name: .shortAndLong, help: "Output video quality [0-100]. 50 is a good default value.")
     var quality: Int
 
     @Flag(help: "Set the left file as the \"hero\" stream that is displayed when viewing in 2D.")
