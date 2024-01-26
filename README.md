@@ -80,7 +80,29 @@ I literally do not know Swift (I'm an Android developer) and had to bumble my wa
 
 ## Additional Notes
 
+### Special Thanks
+
 This would not have been possible without [this blog post](https://www.finnvoorhees.com/words/reading-and-writing-spatial-video-with-avfoundation) from [Finn Voorhees](https://github.com/finnvoor). Huge thanks! ([archive link](https://web.archive.org/web/20240117091738/https://www.finnvoorhees.com/words/reading-and-writing-spatial-video-with-avfoundation))
+
+### Adding Audio
+
+`ffmpeg` does not maintain Apple's custom spatial video metadata when remuxing. I recommend using [MP4Box](https://github.com/gpac/gpac/wiki/MP4Box). Here's a quick example:
+
+```zsh
+brew install mp4box
+mp4box -new -add <MV-HEVC video output> -add <additional file with audio> -add <additional file with subtitles> <...> output.mp4
+```
+
+You should see output like this:
+
+```text
+[iso file] Unknown box type vexu in parent hvc1
+[iso file] Unknown box type hfov in parent hvc1
+[iso file] Unknown box type vexu in parent hvc1
+[iso file] Unknown box type hfov in parent hvc1
+```
+
+That's good! Those are the proposed "Spatial Video" metadata boxes that Apple defined [here](https://developer.apple.com/av-foundation/Stereo-Video-ISOBMFF-Extensions.pdf). MP4Box should carry them through to the output, resulting in a file with audio that Apple devices recognize as spatial video.
 
 ## Changelog
 
