@@ -14,4 +14,6 @@ enum MediaError: Error {
   case couldNotParse
   case timeoutError
   case createOutputError
+  case inputTimestampMismatch
+  case appendTaggedBufferError
 }

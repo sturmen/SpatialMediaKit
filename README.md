@@ -8,12 +8,13 @@ As of January 2024, Apple's MV-HEVC format for stereoscopic video is very new an
 
 ## Features
 
-Today, there is only one feature: `Split`. It takes an MV-HEVC file and outputs the left and right eyes as separate files in the current directory. The output format is ProRes 422 HQ, video only. The user is expected to be familiar with tools such as ffmpeg for all other needs, including remuxing the audio back in.
+1. `Split` takes an MV-HEVC file and outputs the left and right eyes as separate files in the current directory. The output format is ProRes 422 HQ, video only. The user is expected to be familiar with tools such as ffmpeg for all other needs, including remuxing the audio back in.
+2. `Merge` takes two video files (left and right) and re-encodes them into a MV-HEVC file. The output is video-only. The user is expected to be familiar with tools such as ffmpeg for all other needs, including remuxing the audio back in.
 
 Compared to similar tools:, `SpatialMediaKit` has the following advantages:
 
 - Free as in speech and free as in beer. Other tools are proprietary and often charge fees.
-- "Visually lossless" (Apple's words) preservation of the original video streams. Other tools re-encode using lossy HEVC compression in side-by-side, leading to generational quality loss.
+- Splits to ProRes 422 HQ, which is "visually lossless" (Apple's words). Other tools re-encode using lossy HEVC compression in side-by-side, leading to generational quality loss.
 - Runs on macOS. To my knowledge, all other existing tools require processing on an iOS device or relying a cloud service, which is a major source of friction in an otherwise streamlined professional workflow.
 - Completely, verifiably private. You are free to examine the source code and see that your media never leaves your devices, enabling you to maintain control over your videos.
 
@@ -47,6 +48,32 @@ OPTIONS:
   -h, --help              Show help information.
 ```
 
+### `merge`
+
+```text
+OVERVIEW: Merge two video files into a single MV-HEVC file.
+
+USAGE: spatial-media-kit-tool merge [--debug] --left-file <left-file> --right-file <right-file> --quality <quality> [--left-is-primary] [--right-is-primary] --horizontal-field-of-view <horizontal-field-of-view> --horizontal-disparity-adjustment <horizontal-disparity-adjustment> --output-file <output-file>
+
+OPTIONS:
+  --debug
+  -l, --left-file <left-file>
+                          The left eye media file to merge.
+  -r, --right-file <right-file>
+                          The right eye media file to merge.
+  -q, --quality <quality> Output video quality [0-100]. 75 is a good default value.
+  --left-is-primary       Set the left file as the "hero" stream that is displayed when viewing in 2D.
+  --right-is-primary      Set the right file as the "hero" stream that is displayed when viewing in 2D.
+  --horizontal-field-of-view <horizontal-field-of-view>
+                          The field of view of the output video, in degrees. Output will be rounded to the nearest thousandth of a degree. 90 is a good default value.
+  --horizontal-disparity-adjustment <horizontal-disparity-adjustment>
+                          The horizontal disparity adjustment. 200 is a good default value.
+  -o, --output-file <output-file>
+                          The output file to write to. Expects a .MOV extension.
+  --version               Show the version.
+  -h, --help              Show help information.
+```
+
 ## Contributing
 
 I literally do not know Swift (I'm an Android developer) and had to bumble my way through for this project, so apologies for the code organization (or lack thereof). There is also no error handling or anything. Consider this to at most a "proof of concept." PRs welcome!
@@ -56,6 +83,10 @@ I literally do not know Swift (I'm an Android developer) and had to bumble my wa
 This would not have been possible without [this blog post](https://www.finnvoorhees.com/words/reading-and-writing-spatial-video-with-avfoundation) from [Finn Voorhees](https://github.com/finnvoor). Huge thanks! ([archive link](https://web.archive.org/web/20240117091738/https://www.finnvoorhees.com/words/reading-and-writing-spatial-video-with-avfoundation))
 
 ## Changelog
+
+### v0.0.4-alpha (2024-01-26)
+
+- added "merge"
 
 ### v0.0.3-alpha (2024-01-22)
 
