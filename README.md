@@ -53,10 +53,10 @@ OPTIONS:
 ```text
 OVERVIEW: Merge two video files into a single MV-HEVC file.
 
-USAGE: spatial-media-kit-tool merge [--debug] --left-file <left-file> --right-file <right-file> --quality <quality> [--left-is-primary] [--right-is-primary] --horizontal-field-of-view <horizontal-field-of-view> --horizontal-disparity-adjustment <horizontal-disparity-adjustment> --output-file <output-file>
+USAGE: spatial-media-kit-tool merge [--debug] --left-file <left-file> --right-file <right-file> --quality <quality> [--left-is-primary] [--right-is-primary] --horizontal-field-of-view <horizontal-field-of-view> [--horizontal-disparity-adjustment <horizontal-disparity-adjustment>] --output-file <output-file>
 
 OPTIONS:
-  --debug
+  --debug                 Optional. Pause execution at start to allow for time to attach a debugger.
   -l, --left-file <left-file>
                           The left eye media file to merge.
   -r, --right-file <right-file>
@@ -65,9 +65,9 @@ OPTIONS:
   --left-is-primary       Set the left file as the "hero" stream that is displayed when viewing in 2D.
   --right-is-primary      Set the right file as the "hero" stream that is displayed when viewing in 2D.
   --horizontal-field-of-view <horizontal-field-of-view>
-                          The field of view of the output video, in degrees. Output will be rounded to the nearest thousandth of a degree. 90 is a good default value.
+                          The field of view of the output video, in degrees. Output will be rounded to the nearest thousandth of a degree. 90.000 is a good default value.
   --horizontal-disparity-adjustment <horizontal-disparity-adjustment>
-                          The horizontal disparity adjustment. 200 is a good default value.
+                          Optional. The horizontal disparity adjustment. The value is a 32-bit integer, measured over the range of -10000 to 10000. Only specify a disparity adjustment, including 0, when you know the specific value.
   -o, --output-file <output-file>
                           The output file to write to. Expects a .MOV extension.
   --version               Show the version.

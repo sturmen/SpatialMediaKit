@@ -62,7 +62,8 @@ extension SpatialMediaKitTool {
       CommandConfiguration(
         abstract: "Merge two video files into a single MV-HEVC file.")
 
-    @Flag(help: "Pause execution at start to allow for time to attach a debugger.") var debug =
+    @Flag(help: "Optional. Pause execution at start to allow for time to attach a debugger.")
+    var debug =
       false
 
     @Option(name: .shortAndLong, help: "The left eye media file to merge.")
@@ -89,9 +90,9 @@ extension SpatialMediaKitTool {
     @Option(
       name: .long,
       help:
-        "The horizontal disparity adjustment. 200 is a good default value."
+        "Optional. The horizontal disparity adjustment. The value is a 32-bit integer, measured over the range of -10000 to 10000. Only specify a disparity adjustment, including 0, when you know the specific value."
     )
-    var horizontalDisparityAdjustment: Int
+    var horizontalDisparityAdjustment: Int?
 
     @Option(
       name: .shortAndLong,

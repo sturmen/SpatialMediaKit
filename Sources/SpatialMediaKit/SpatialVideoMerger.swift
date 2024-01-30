@@ -49,7 +49,7 @@ public class SpatialVideoMerger {
     transferFunction: String,
     colorMatrix: String,
     hFov: Int,
-    hDisparityAdj: Int,
+    hDisparityAdj: Int?,
     leftIsPrimary: Bool
   )
     -> (
@@ -63,28 +63,39 @@ public class SpatialVideoMerger {
     )
 
     let mvHevcViewIds = leftIsPrimary ? [0, 1] : [1, 0]
+    let heroEye =
+      leftIsPrimary ? kCMFormatDescriptionHeroEye_Left : kCMFormatDescriptionHeroEye_Right
+
+    let outputSettingsDict: [String: Any] = [
+      AVVideoWidthKey: outputWidth,
+      AVVideoHeightKey: outputHeight,
+      AVVideoColorPropertiesKey: [
+        AVVideoColorPrimariesKey: colorPrimaries,
+        AVVideoTransferFunctionKey: transferFunction,
+        AVVideoYCbCrMatrixKey: colorMatrix,
+      ],
+      AVVideoCompressionPropertiesKey: [
+        kVTCompressionPropertyKey_HDRMetadataInsertionMode: kVTHDRMetadataInsertionMode_Auto,
+        kVTCompressionPropertyKey_ProfileLevel: kVTProfileLevel_HEVC_Main10_AutoLevel,
+        kVTCompressionPropertyKey_Quality: videoQuality,
+        kVTCompressionPropertyKey_MVHEVCVideoLayerIDs: [0, 1] as CFArray,
+        kVTCompressionPropertyKey_MVHEVCViewIDs: [0, 1] as CFArray,
+        kCMFormatDescriptionExtension_HorizontalFieldOfView: hFov,  // asset-specific, in thousandths of a degree
+        kVTCompressionPropertyKey_MVHEVCLeftAndRightViewIDs: mvHevcViewIds,  // asset-specific
+        kVTCompressionPropertyKey_HeroEye: heroEye,
+      ],
+      AVVideoCodecKey: AVVideoCodecType.hevc,
+    ]
+
+    if let hDisparityAdj = hDisparityAdj {
+      let compressionProps =
+        outputSettingsDict[AVVideoCompressionPropertiesKey] as! NSMutableDictionary
+      compressionProps[kVTCompressionPropertyKey_HorizontalDisparityAdjustment] = hDisparityAdj
+    }
 
     let assetWriterInput = AVAssetWriterInput(
       mediaType: .video,
-      outputSettings: [
-        AVVideoWidthKey: outputWidth,
-        AVVideoHeightKey: outputHeight,
-        AVVideoColorPropertiesKey: [
-          AVVideoColorPrimariesKey: colorPrimaries,
-          AVVideoTransferFunctionKey: transferFunction,
-          AVVideoYCbCrMatrixKey: colorMatrix,
-        ],
-        AVVideoCompressionPropertiesKey: [
-          kVTCompressionPropertyKey_HDRMetadataInsertionMode: kVTHDRMetadataInsertionMode_Auto,
-          kVTCompressionPropertyKey_ProfileLevel: kVTProfileLevel_HEVC_Main10_AutoLevel,
-          kVTCompressionPropertyKey_Quality: videoQuality,
-          kVTCompressionPropertyKey_MVHEVCVideoLayerIDs: [0, 1] as CFArray,
-          kCMFormatDescriptionExtension_HorizontalFieldOfView: hFov,  // asset-specific, in thousandths of a degree
-          kVTCompressionPropertyKey_HorizontalDisparityAdjustment: hDisparityAdj,  // asset-specific
-          kVTCompressionPropertyKey_MVHEVCLeftAndRightViewIDs: mvHevcViewIds,  // asset-specific
-        ],
-        AVVideoCodecKey: AVVideoCodecType.hevc,
-      ]
+      outputSettings: outputSettingsDict
     )
 
     let adaptor = AVAssetWriterInputTaggedPixelBufferGroupAdaptor(
@@ -223,7 +234,7 @@ public class SpatialVideoMerger {
     outputFilePath: String,
     quality: Float,
     horizontalFieldOfView: Int,
-    horizontalDisparityAdjustment: Int,
+    horizontalDisparityAdjustment: Int?,
     leftIsPrimary: Bool
   ) {
     do {
