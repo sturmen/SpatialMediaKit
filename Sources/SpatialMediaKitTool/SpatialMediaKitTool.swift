@@ -17,7 +17,7 @@ struct SpatialMediaKitTool: ParsableCommand {
 
   static var configuration = CommandConfiguration(
     abstract: "A utility for transforming spatial media.",
-    version: "0.0.4-alpha",
+    version: "0.0.5-alpha",
     subcommands: [Split.self, Merge.self],
     defaultSubcommand: Split.self)
 }
