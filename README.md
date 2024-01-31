@@ -4,12 +4,12 @@ A utility for transforming spatial media.
 
 ## Purpose
 
-As of January 2024, Apple's MV-HEVC format for stereoscopic video is very new and barely supported by anything. However, there are millions of iPhones (iPhone 15 Pro/Pro Max) that can capture spatial video already. There was no available FOSS tool capable of splitting the stereo pair, especially not in formats suited for post-production.
+As of January 2024, Apple's MV-HEVC format for stereoscopic video is very new and barely supported by anything. However, there are millions of iPhones (iPhone 15 Pro/Pro Max) that can capture spatial video already. There was no available FOSS tool capable of splitting the stereo pair, especially not in formats suited for post-production. Upon public request, the ability to create MV-HEVC files from two separate input files was also added.
 
 ## Features
 
 1. `Split` takes an MV-HEVC file and outputs the left and right eyes as separate files in the current directory. The output format is ProRes 422 HQ, video only. The user is expected to be familiar with tools such as ffmpeg for all other needs, including remuxing the audio back in.
-2. `Merge` takes two video files (left and right) and re-encodes them into a MV-HEVC file. The output is video-only. The user is expected to be familiar with tools such as ffmpeg for all other needs, including remuxing the audio back in.
+2. `Merge` takes two video files (left and right) and re-encodes them into a MV-HEVC file. The output is video-only. The user is expected to be familiar with tools such as MP4Box for all other needs, including remuxing the audio back in.
 
 Compared to similar tools:, `SpatialMediaKit` has the following advantages:
 
@@ -105,6 +105,10 @@ You should see output like this:
 That's good! Those are the proposed "Spatial Video" metadata boxes that Apple defined [here](https://developer.apple.com/av-foundation/Stereo-Video-ISOBMFF-Extensions.pdf). MP4Box should carry them through to the output, resulting in a file with audio that Apple devices recognize as spatial video.
 
 ## Changelog
+
+### v0.0.5-alpha (2024-01-30)
+
+- Made horizontal disparity adjustment optional for Merge.
 
 ### v0.0.4-alpha (2024-01-26)
 
