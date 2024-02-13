@@ -66,7 +66,7 @@ public class SpatialVideoMerger {
     let heroEye =
       leftIsPrimary ? kCMFormatDescriptionHeroEye_Left : kCMFormatDescriptionHeroEye_Right
 
-    let outputSettingsDict: [String: Any] = [
+    var outputSettingsDict: [String: Any] = [
       AVVideoWidthKey: outputWidth,
       AVVideoHeightKey: outputHeight,
       AVVideoColorPropertiesKey: [
@@ -88,9 +88,11 @@ public class SpatialVideoMerger {
     ]
 
     if let hDisparityAdj = hDisparityAdj {
-      let compressionProps =
-        outputSettingsDict[AVVideoCompressionPropertiesKey] as! NSMutableDictionary
-      compressionProps[kVTCompressionPropertyKey_HorizontalDisparityAdjustment] = hDisparityAdj
+      if let compressionPropsDict = outputSettingsDict[AVVideoCompressionPropertiesKey] as? [String: Any] {
+        let compressionProps = NSMutableDictionary(dictionary: compressionPropsDict)
+        compressionProps[kVTCompressionPropertyKey_HorizontalDisparityAdjustment] = hDisparityAdj
+        outputSettingsDict[AVVideoCompressionPropertiesKey] = compressionProps
+      }
     }
 
     let assetWriterInput = AVAssetWriterInput(
