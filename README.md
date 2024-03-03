@@ -110,6 +110,12 @@ That's good! Those are the proposed "Spatial Video" metadata boxes that Apple de
 
 ## Changelog
 
+### v0.0.6-alpha (2024-03-03)
+
+- Bugfix for horizontal disparity adjustment. Thanks @thorikawa for #3!
+- Added "preserve dynamic metadata" option to encoder.
+- Added example for how to re-encode HSBS media.
+
 ### v0.0.5-alpha (2024-01-30)
 
 - Made horizontal disparity adjustment optional for Merge.
