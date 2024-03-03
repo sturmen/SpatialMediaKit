@@ -44,6 +44,7 @@ public class SpatialVideoMerger {
     outputUrl: URL,
     outputWidth: Int,
     outputHeight: Int,
+    outputFrameRate: Float,
     videoQuality: Float,
     colorPrimaries: String,
     transferFunction: String,
@@ -84,6 +85,7 @@ public class SpatialVideoMerger {
         kCMFormatDescriptionExtension_HorizontalFieldOfView: hFov,  // asset-specific, in thousandths of a degree
         kVTCompressionPropertyKey_MVHEVCLeftAndRightViewIDs: mvHevcViewIds,  // asset-specific
         kVTCompressionPropertyKey_HeroEye: heroEye,
+        kVTCompressionPropertyKey_ExpectedFrameRate: outputFrameRate,
       ],
       AVVideoCodecKey: AVVideoCodecType.hevc,
     ]
@@ -297,13 +299,22 @@ public class SpatialVideoMerger {
         return
       }
 
+      let leftFrameRate = leftAssetReaderTrackOutput.track.nominalFrameRate
+      let rightFrameRate = rightAssetReaderTrackOutput.track.nominalFrameRate
+
+      if leftFrameRate != rightFrameRate {
+        print("left and right input resolutions do not match. aborting!")
+        return
+      }
+
       let width = Int(leftInputSize.width)
       let height = Int(leftInputSize.height)
 
       let leftUrl = try createOutputUrl(outputFilePath: outputFilePath)
 
       let (leftWriter, adaptor) = initWriter(
-        outputUrl: leftUrl, outputWidth: width, outputHeight: height, videoQuality: quality,
+        outputUrl: leftUrl, outputWidth: width, outputHeight: height,
+        outputFrameRate: leftFrameRate, videoQuality: quality,
         colorPrimaries: colorPrimaries, transferFunction: transferFunction,
         colorMatrix: colorMatrix, hFov: horizontalFieldOfView,
         hDisparityAdj: horizontalDisparityAdjustment, leftIsPrimary: leftIsPrimary)
