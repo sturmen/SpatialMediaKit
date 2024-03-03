@@ -110,6 +110,10 @@ That's good! Those are the proposed "Spatial Video" metadata boxes that Apple de
 
 ## Changelog
 
+### v0.0.7-alpha (2024-03-03)
+
+- Extract and set explicit framerate in output file.
+
 ### v0.0.6-alpha (2024-03-03)
 
 - Bugfix for horizontal disparity adjustment. Thanks @thorikawa for #3!
