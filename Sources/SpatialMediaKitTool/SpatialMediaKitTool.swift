@@ -83,7 +83,7 @@ extension SpatialMediaKitTool {
     @Option(
       name: .long,
       help:
-        "The field of view of the output video, in degrees. Output will be rounded to the nearest thousandth of a degree. 90.000 is a good default value."
+        "The field of view of the output video, in degrees. Output will be rounded to the nearest thousandth of a degree. 65.200 is a good default value."
     )
     var horizontalFieldOfView: Float
 

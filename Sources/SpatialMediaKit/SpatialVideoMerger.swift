@@ -78,6 +78,7 @@ public class SpatialVideoMerger {
         kVTCompressionPropertyKey_HDRMetadataInsertionMode: kVTHDRMetadataInsertionMode_Auto,
         kVTCompressionPropertyKey_ProfileLevel: kVTProfileLevel_HEVC_Main10_AutoLevel,
         kVTCompressionPropertyKey_Quality: videoQuality,
+        kVTCompressionPropertyKey_PreserveDynamicHDRMetadata: true,
         kVTCompressionPropertyKey_MVHEVCVideoLayerIDs: [0, 1] as CFArray,
         kVTCompressionPropertyKey_MVHEVCViewIDs: [0, 1] as CFArray,
         kCMFormatDescriptionExtension_HorizontalFieldOfView: hFov,  // asset-specific, in thousandths of a degree
@@ -88,7 +89,9 @@ public class SpatialVideoMerger {
     ]
 
     if let hDisparityAdj = hDisparityAdj {
-      if let compressionPropsDict = outputSettingsDict[AVVideoCompressionPropertiesKey] as? [String: Any] {
+      if let compressionPropsDict = outputSettingsDict[AVVideoCompressionPropertiesKey]
+        as? [String: Any]
+      {
         let compressionProps = NSMutableDictionary(dictionary: compressionPropsDict)
         compressionProps[kVTCompressionPropertyKey_HorizontalDisparityAdjustment] = hDisparityAdj
         outputSettingsDict[AVVideoCompressionPropertiesKey] = compressionProps
