@@ -74,6 +74,10 @@ OPTIONS:
   -h, --help              Show help information.
 ```
 
+### Example Usage
+
+You can see an example of how to encode a half-SBS movie file into a spatial video [in the Scripts directory.](Scripts/convert_hsbs.zsh)
+
 ## Contributing
 
 I literally do not know Swift (I'm an Android developer) and had to bumble my way through for this project, so apologies for the code organization (or lack thereof). There is also no error handling or anything. Consider this to at most a "proof of concept." PRs welcome!
