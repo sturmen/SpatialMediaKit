@@ -7,9 +7,9 @@
                 "swift"
             ],
             "args": [],
-            "cwd": "${workspaceFolder:mvhevcsplit}",
+            "cwd": "${workspaceFolder:SpatialMediaKit}",
             "name": "Debug spatial-media-kit-tool",
-            "program": "${workspaceFolder:mvhevcsplit}/.build/debug/spatial-media-kit-tool",
+            "program": "${workspaceFolder:SpatialMediaKit}/.build/debug/spatial-media-kit-tool",
             "preLaunchTask": "swift: Build Debug spatial-media-kit-tool"
         },
         {
@@ -19,9 +19,9 @@
                 "swift"
             ],
             "args": [],
-            "cwd": "${workspaceFolder:mvhevcsplit}",
+            "cwd": "${workspaceFolder:SpatialMediaKit}",
             "name": "Release spatial-media-kit-tool",
-            "program": "${workspaceFolder:mvhevcsplit}/.build/release/spatial-media-kit-tool",
+            "program": "${workspaceFolder:SpatialMediaKit}/.build/release/spatial-media-kit-tool",
             "preLaunchTask": "swift: Build Release spatial-media-kit-tool"
         }
     ]
